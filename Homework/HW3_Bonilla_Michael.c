@@ -19,13 +19,14 @@ int main(int argc, char **args)
   ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
 
-  /* Vector creation of x and b */
+  /* Vector creation of x,b, and u */
 
   ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
   ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
   ierr = VecSetSizes(x,PETSC_DECIDE,n);CHKERRQ(ierr);
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
-  ierr = VecDuplicate(x,&b,&u);CHKERRQ(ierr);
+  ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
+  ierr = VecDuplicate(x,&u);CHKERRQ(ierr);
 
   /* Matrix creator*/
 
