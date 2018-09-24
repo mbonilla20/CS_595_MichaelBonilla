@@ -4,7 +4,7 @@ static char help[] = "Solves a tridiagonal linear system with KSP.\n\n";
 
 int main(int argc, char **args)
 {
-  Vec               x,b;    /* our approx soultion and rhs*/
+  Vec               x,b,u;    /* our approx soultion and rhs*/
   Mat               A;      /* our tridiagonal system*/
   KSP               ksp;    /* our linear solver */
   PetscReal         norm;   /* norm of solution error */
@@ -25,7 +25,7 @@ int main(int argc, char **args)
   ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
   ierr = VecSetSizes(x,PETSC_DECIDE,n);CHKERRQ(ierr);
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
-  ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
+  ierr = VecDuplicate(x,&b,&u);CHKERRQ(ierr);
 
   /* Matrix creator*/
 
@@ -69,6 +69,14 @@ int main(int argc, char **args)
     /* solve system */
     ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
     ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+    /* norm of error*/
+    ierr = MatMult(A,x,u);CHKERRQ(ierr);
+    ierr = VecAXPY(u,-1.0,b); CHKERRQ(ierr);
+    ierr = VecNorm(u,NORM_2,&norm);CHKERRQ(ierr);
+    ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
+
 
     /* free storage */
     ierr = VecDestroy(&x);CHKERRQ(ierr);
