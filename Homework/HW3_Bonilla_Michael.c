@@ -1,3 +1,5 @@
+static char help[] = "Solves a tridiagonal linear system with KSP.\n\n";
+
 #include <petscksp.h>
 
 int main(int argc, char **args)
