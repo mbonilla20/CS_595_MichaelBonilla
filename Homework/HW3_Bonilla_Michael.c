@@ -1,4 +1,4 @@
-#include <pestscksp.h>
+#include <petscksp.h>
 
 int main(int argc, char **args)
 {
