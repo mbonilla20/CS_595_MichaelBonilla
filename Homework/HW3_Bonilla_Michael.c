@@ -50,33 +50,20 @@ int main(int argc, char **args)
   /* create solver */
   ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
   ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
-  ierr = PetscOptionsGetBool(NULL,NULL,"-change_pc_side",&changepcside,NULL);CHKERRQ(ierr);
-  if (changepcside) {
-    ierr = KSPSetUp(ksp);CHKERRQ(ierr);
-    ierr = PetscOptionsInsertString(NULL,"-ksp_norm_type unpreconditioned -ksp_pc_side right");CHKERRQ(ierr);
-    ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
-    ierr = KSPSetUp(ksp);CHKERRQ(ierr);
-    }
 
-    /* runtime options */
-    ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
+  /* runtime options */
+  ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
 
-    if (nonzeroguess) {
-        PetscScalar p = .5;
-        ierr = VecSet(x,p);CHKERRQ(ierr);
-        ierr = KSPSetInitialGuessNonzero(ksp,PETSC_TRUE);CHKERRQ(ierr);
-    }
+  /* solve system */
+  ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
+  ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-    /* solve system */
-    ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
-    ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-
-    /* norm of error*/
-    ierr = MatMult(A,x,u);CHKERRQ(ierr);
-    ierr = VecAXPY(u,-1.0,b); CHKERRQ(ierr);
-    ierr = VecNorm(u,NORM_2,&norm);CHKERRQ(ierr);
-    ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
+  /* norm of error*/
+  ierr = MatMult(A,x,u);CHKERRQ(ierr);
+  ierr = VecAXPY(u,-1.0,b); CHKERRQ(ierr);
+  ierr = VecNorm(u,NORM_2,&norm);CHKERRQ(ierr);
+  ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
 
 
     /* free storage */
