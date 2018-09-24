@@ -57,8 +57,7 @@ int main(int argc, char **args)
 
   /* solve system */
   ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
-  ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-
+ 
   /* norm of error*/
   ierr = MatMult(A,x,u);CHKERRQ(ierr);
   ierr = VecAXPY(u,-1.0,b); CHKERRQ(ierr);
