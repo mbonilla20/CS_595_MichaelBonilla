@@ -1,8 +1,10 @@
-#include <pestscksp.h>
+static char help[] = "Solves a tridiagonal linear system with KSP.\n\n";
+
+#include <petscksp.h>
 
 int main(int argc, char **args)
 {
-  Vec               x,b;    /* our approx soultion and rhs*/
+  Vec               x,b,u;    /* our approx soultion and rhs*/
   Mat               A;      /* our tridiagonal system*/
   KSP               ksp;    /* our linear solver */
   PetscReal         norm;   /* norm of solution error */
@@ -14,17 +16,17 @@ int main(int argc, char **args)
 
   ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only!");
   ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
 
-  /* Vector creation of x and b */
+  /* Vector creation of x,b, and u */
 
   ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
   ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
   ierr = VecSetSizes(x,PETSC_DECIDE,n);CHKERRQ(ierr);
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
   ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
+  ierr = VecDuplicate(x,&u);CHKERRQ(ierr);
 
   /* Matrix creator*/
 
@@ -69,13 +71,19 @@ int main(int argc, char **args)
     ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
     ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
+    /* norm of error*/
+    ierr = MatMult(A,x,u);CHKERRQ(ierr);
+    ierr = VecAXPY(u,-1.0,b); CHKERRQ(ierr);
+    ierr = VecNorm(u,NORM_2,&norm);CHKERRQ(ierr);
+    ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
+
+
     /* free storage */
-    ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&u);CHKERRQ(ierr);
+    ierr = VecDestroy(&x);CHKERRQ(ierr);
     ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
+    ierr = VecDestroy(&u);CHKERRQ(ierr);
     ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
     ierr = PetscFinalize();
     return ierr;
-}
-
-
 }
