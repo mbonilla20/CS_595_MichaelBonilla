@@ -82,6 +82,7 @@ int main(int argc, char **args)
     /* free storage */
     ierr = VecDestroy(&x);CHKERRQ(ierr);
     ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
+    ierr = VecDestroy(&u);CHKERRQ(ierr);
     ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
     ierr = PetscFinalize();
     return ierr;
