@@ -27,6 +27,7 @@ int main(int argc, char **args)
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
   ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
   ierr = VecDuplicate(x,&u);CHKERRQ(ierr);
+  ierr = VecSet(b,one);CHKERRQ(ierr);
 
   /* Matrix creator*/
 
