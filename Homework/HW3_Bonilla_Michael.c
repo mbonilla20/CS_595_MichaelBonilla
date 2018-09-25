@@ -9,10 +9,10 @@ int main(int argc, char **args)
   KSP               ksp;    /* our linear solver */
   PetscReal         norm;   /* norm of solution error */
   PetscErrorCode    ierr;   /* error code */
-  PetscInt       i,n = 100,col[3],its,Istart,Iend;
+  PetscInt       j,Ii,n = 100,its,Istart,Iend;
   PetscMPIInt    size;
   PetscScalar    one =1.0 ,v;
-  PetscBool      nonzeroguess = PETSC_FALSE,changepcside = PETSC_FALSE;
+  PetscBool      nonzeroguess = PETSC_FALSE;
 
   ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
