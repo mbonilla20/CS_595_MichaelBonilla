@@ -9,7 +9,7 @@ int main(int argc, char **args)
   KSP               ksp;    /* our linear solver */
   PetscReal         norm;   /* norm of solution error */
   PetscErrorCode    ierr;   /* error code */
-  PetscInt       j,Ii,n = 100,its,Istart,Iend;
+  PetscInt       j,J,Ii,n = 100,its,Istart,Iend;
   PetscMPIInt    size;
   PetscScalar    one =1.0 ,v;
   PetscBool      nonzeroguess = PETSC_FALSE;
