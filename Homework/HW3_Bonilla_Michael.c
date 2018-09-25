@@ -9,9 +9,9 @@ int main(int argc, char **args)
   KSP               ksp;    /* our linear solver */
   PetscReal         norm;   /* norm of solution error */
   PetscErrorCode    ierr;   /* error code */
-  PetscInt       i,n = 100,col[3],its;
+  PetscInt       i,n = 100,col[3],its,Istart,Iend;
   PetscMPIInt    size;
-  PetscScalar    one = 1.0,value[3];
+  PetscScalar    one =1.0 ,v;
   PetscBool      nonzeroguess = PETSC_FALSE,changepcside = PETSC_FALSE;
 
   ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
@@ -35,18 +35,19 @@ int main(int argc, char **args)
   ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
   ierr = MatSetFromOptions(A);CHKERRQ(ierr);
   ierr = MatSetUp(A);CHKERRQ(ierr);
+  ierr = MatMPIAIJSetPreallocation(A,3,NULL,3,NULL);CHKERRQ(ierr);
+  /* fill matrix in parallel */
 
-  value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
-  for (i=1; i<n-1; i++) {
-    col[0] = i-1; col[1] = i; col[2] = i+1;
-    ierr   = MatSetValues(A,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
+  ierr = MatGetOwnershipRange(A,&Istart,&Iend);CHKERRQ(ierr);
+  for (Ii=Istart; Ii<Iend; Ii++) {
+    v = -1.0; j = Ii;
+    if (j>0)   {J = Ii - 1; ierr = MatSetValues(A,1,&Ii,1,&J,&v,ADD_VALUES);CHKERRQ(ierr);}
+    if (j<n-1) {J = Ii + 1; ierr = MatSetValues(A,1,&Ii,1,&J,&v,ADD_VALUES);CHKERRQ(ierr);}
+    v = 2.0; ierr = MatSetValues(A,1,&Ii,1,&Ii,&v,ADD_VALUES);CHKERRQ(ierr);
   }
-  i    = n - 1; col[0] = n - 2; col[1] = n - 1;
-  ierr = MatSetValues(A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
-  i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
-  ierr = MatSetValues(A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+  ierr = MatSetOption(A,MAT_SYMMETRIC,PETSC_TRUE);CHKERRQ(ierr);
 
   /* create solver */
   ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
@@ -57,7 +58,7 @@ int main(int argc, char **args)
 
   /* solve system */
   ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
- 
+
   /* norm of error*/
   ierr = MatMult(A,x,u);CHKERRQ(ierr);
   ierr = VecAXPY(u,-1.0,b); CHKERRQ(ierr);
