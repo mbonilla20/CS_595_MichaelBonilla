@@ -35,10 +35,11 @@ int main(int argc,char **args)
   KSP            ksp;      /* linear solver context */
   PetscRandom    rctx;     /* random number generator context */
   PetscReal      norm;     /* norm of solution error */
-  PetscInt       i,j,Ii,J,Istart,Iend,m = 8,n = 7,its,rank,size;
+  PetscInt       i,j,Ii,J,Istart,Iend,m = 8,n = 7,its,N,rstart,rend;
   PetscErrorCode ierr;
   PetscBool      flg = PETSC_FALSE;
-  PetscScalar    v;
+  PetscScalar    v,one=1.0;
+  PetscMPIInt    rank,size;
 #if defined(PETSC_USE_LOG)
   PetscLogStage stage;
 #endif
@@ -133,11 +134,21 @@ int main(int argc,char **args)
         below).
   */
   ierr = VecCreate(PETSC_COMM_WORLD,&u);CHKERRQ(ierr);
-  ierr = VecSetSizes(u,rank+1,m*n);CHKERRQ(ierr);
+  ierr = VecSetSizes(u,PETSC_DECIDE,m*n);CHKERRQ(ierr);
   ierr = VecSetFromOptions(u);CHKERRQ(ierr);
   ierr = VecDuplicate(u,&b);CHKERRQ(ierr);
-  ierr = VecDuplicate(b,&x);CHKERRQ(ierr);
-
+  ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
+  ierr = VecSetSizes(x,rank+1,PETSC_DECIDE);CHKERRQ(ierr);
+  ierr = VecSetFromOptions(x);CHKERRQ(ierr);
+  ierr = VecGetSize(x,&N);CHKERRQ(ierr);
+  ierr = VecGetOwnwershipRange(x,&,rstart,&rend);CHKERRQ(ierr);
+         ng=rend-rstart+2;
+  for(i=0; i<ng; i++){
+         ierr=VecSetValuesLocal(x,1,&i,&rank+1,INSERT_VALUES);CHKERRQ(ierr);
+  }
+  ierr = VecAssemblyBegin(x);CHKERRQ(ierr);
+  ierr = VecAssemblyEnd(x);CHKERRQ(ierr);
+  ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
   /*
      Set exact solution; then compute right-hand-side vector.
      By default we use an exact solution of a vector with all
@@ -253,7 +264,7 @@ int main(int argc,char **args)
 
    test:
       suffix: chebyest_2
-      args: -m 80 -n 80 -ksp_pc_side right -pc_type ksp -ksp_ksp_type chebyshev -ksp_ksp_max_it 5 -ksp_ksp_chebyshev_esteig 0.9,0,0,1.1 -ksp_esteig_ksp_type cg -ksp_monitor_short 
+      args: -m 80 -n 80 -ksp_pc_side right -pc_type ksp -ksp_ksp_type chebyshev -ksp_ksp_max_it 5 -ksp_ksp_chebyshev_esteig 0.9,0,0,1.1 -ksp_esteig_ksp_type cg -ksp_monitor_short
 
    test:
       args: -ksp_monitor_short -m 5 -n 5 -ksp_gmres_cgs_refinement_type refine_always
