@@ -352,10 +352,14 @@ cpi: cpi.o  chkopts
 	 ${RM} cpi.o
 
 HW3_Bonilla_Michael: HW3_Bonilla_Michael.o  chkopts
-	 -${CLINKER} -o HW3_Bonilla_Michael HW3_Bonilla_Michael.o  
+	 -${CLINKER} -o HW3_Bonilla_Michael HW3_Bonilla_Michael.o
 	 ${PETSC_KSP_LIB}
-	 ${RM} HW_3_Bonilla_Micahel.o
+	 ${RM} HW3_Bonilla_Micahel.o
 
+HW4_Bonilla_Michael: HW4_Bonilla_Michael.o  chkopts
+ 	 -${CLINKER} -o HW4_Bonilla_Michael HW4_Bonilla_Michael.o
+ 	 ${PETSC_KSP_LIB}
+ 	 ${RM} HW3_Bonilla_Micahel.o
 
 
 testex100: ex100.PETSc
