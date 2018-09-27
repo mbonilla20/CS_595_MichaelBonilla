@@ -141,7 +141,7 @@ int main(int argc,char **args)
   ierr = VecSetSizes(x,rank+1,PETSC_DECIDE);CHKERRQ(ierr);
   ierr = VecSetFromOptions(x);CHKERRQ(ierr);
   ierr = VecGetSize(x,&N);CHKERRQ(ierr);
-  ierr = VecGetOwnwershipRange(x,&,rstart,&rend);CHKERRQ(ierr);
+  ierr = VecGetOwnwershipRange(x,&rstart,&rend);CHKERRQ(ierr);
          ng=rend-rstart+2;
   for(i=0; i<ng; i++){
          ierr=VecSetValuesLocal(x,1,&i,&rank+1,INSERT_VALUES);CHKERRQ(ierr);
