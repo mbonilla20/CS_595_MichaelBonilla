@@ -361,7 +361,6 @@ HW4_Bonilla_Michael: HW4_Bonilla_Michael.o chkopts
 	${PETSC_KSP_LIB}
 	${RM} HW4_Bonilla_Michael.o
 
-
 testex100: ex100.PETSc
 	-@if [ "${PETSC_WITH_BATCH}" != "" ]; then \
            echo "Running with batch filesystem; to test run src/ksp/ksp/examples/tutorials/ex100 with" ; \
