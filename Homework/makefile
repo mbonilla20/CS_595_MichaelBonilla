@@ -351,6 +351,11 @@ cpi: cpi.o  chkopts
 	 -${CLINKER} -o cpi cpi.o  ${PETSC_KSP_LIB}
 	 ${RM} cpi.o
 
+HW2_Bonilla_Michael: HW2_Bonilla_Michael.o chkopts
+	-${CLINKER} -o HW2_Bonilla_Michael HW2_Bonilla_Michael.o
+	${PETSC_KSP_LIB}
+	${RM} HW2_Bonilla_Michael.o
+	
 HW3_Bonilla_Michael: HW3_Bonilla_Michael.o  chkopts
 	 -${CLINKER} -o HW3_Bonilla_Michael HW3_Bonilla_Michael.o
 	 ${PETSC_KSP_LIB}
