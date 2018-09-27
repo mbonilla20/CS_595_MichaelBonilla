@@ -352,19 +352,16 @@ cpi: cpi.o  chkopts
 	 ${RM} cpi.o
 
 HW2_Bonilla_Michael: HW2_Bonilla_Michael.o chkopts
-	-${CLINKER} -o HW2_Bonilla_Michael HW2_Bonilla_Michael.o
-	${PETSC_KSP_LIB}
-	${RM} HW2_Bonilla_Michael.o
-	
+	 -${CLINKER} -o HW2_Bonilla_Michael HW2_Bonilla_Michael.o ${PETSC_KSP_LIB}
+	 ${RM} HW2_Bonilla_Michael.o
+
 HW3_Bonilla_Michael: HW3_Bonilla_Michael.o  chkopts
-	 -${CLINKER} -o HW3_Bonilla_Michael HW3_Bonilla_Michael.o
-	 ${PETSC_KSP_LIB}
+	 -${CLINKER} -o HW3_Bonilla_Michael HW3_Bonilla_Michael.o ${PETSC_KSP_LIB}
 	 ${RM} HW3_Bonilla_Micahel.o
 
 HW4_Bonilla_Michael: HW4_Bonilla_Michael.o chkopts
-	-${CLINKER} -o HW4_Bonilla_Michael HW4_Bonilla_Michael.o
-	${PETSC_KSP_LIB}
-	${RM} HW4_Bonilla_Michael.o
+	 -${CLINKER} -o HW4_Bonilla_Michael HW4_Bonilla_Michael.o ${PETSC_KSP_LIB}
+	 ${RM} HW4_Bonilla_Michael.o
 
 testex100: ex100.PETSc
 	-@if [ "${PETSC_WITH_BATCH}" != "" ]; then \

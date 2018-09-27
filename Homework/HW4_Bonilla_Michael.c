@@ -43,6 +43,7 @@ int main(int argc,char **args)
 #if defined(PETSC_USE_LOG)
   PetscLogStage stage;
 #endif
+
   ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
   ierr = PetscOptionsGetInt(NULL,NULL,"-m",&m,NULL);CHKERRQ(ierr);
   ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
