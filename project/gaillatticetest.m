@@ -1,0 +1,17 @@
+inp.timeDim.timeVector = 1/250:1/250:1/4; %weekly monitoring for three months
+inp.assetParam.initPrice = 100; %initial stock price
+inp.assetParam.interest = 0.02; %risk-free interest rate
+inp.assetParam.volatility = 0.5; %volatility
+inp.payoffParam.strike = 100; %strike price
+inp.payoffParam.optType = {'euro'}; %looking at an arithmetic mean option
+inp.payoffParam.putCallType = {'call'}; %looking at a put option
+inp.priceParam.absTol = 0.005; %absolute tolerance of a one cent
+inp.priceParam.relTol = 0; %zero relative tolerance
+
+AMeanCallLattice = optPrice(inp); %make a copy of the IID optPrice object
+AMeanCallLattice.priceParam.cubMethod = 'lattice' %change to Sobol sampling
+[AMeanCallLatticePrice,AoutLattice] = genOptPrice(AMeanCallLattice);
+
+AMeanCallLattice_GPU = optPrice(inp); %make a copy of the IID optPrice object
+AMeanCallLattice_GPU.priceParam.cubMethod = 'lattice_GPU' %change to Sobol sampling
+[AMeanCallLatticePrice_GPU,AoutLattice_GPU] = genOptPrice(AMeanCallLattice_GPU);
