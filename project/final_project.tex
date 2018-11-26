@@ -46,43 +46,51 @@ Lattice Cubature on GPU}
 \againframe{frame1}
 \begin{frame}{QMC vs MC}
 \begin{itemize}
-\item GAIL is written in Matlab and has no GPU capabilities.
-\item Will be working on \textit{cubLattice\_g} and trying to speed it up. 
-\item Currently sped up the generation of the lattices 6-8 times faster.
+\item Why use Quasi-Monte Carlo?
+\item Generating lattices are not IID, some dependencies exists
+\item Gives us faster convergence than pseudo random IID numbers.
+\item Quasi Monte Carlo error almost $\mathcal{O}(\frac{1}{N})$ vs Monte Carlo is $\mathcal{O}(\frac{1}{\sqrt{N}})$.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Results}
+\begin{frame}{Results}%do these over various d
 \begin{itemize}
-\item Work on \textit{cubLattice\_g} in three stages:
-	\begin{enumerate}
-		\item Generation of lattices in parallel.
-		\item FFT of points required for algorithm.
-		\item Maintain the theme of automatic integration.
-	\end{enumerate}
-\item Implement restrictions based on hardware.
-\item testing on suitable problems of large dimension.
+\item Generated lattices from 6-8 times faster at least.
+\item Function evaluations and averages computed on GPU.
+\item Using Keister example we can get speed ups to about 10-12 times faster over CPU for high dimensions.
+\item \[ \int_{\mathbb{R}^d}\cos(\|x\|)e^{-\|x\|^2} \textit{d}x\]
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Result Plot}
+d
 \end{frame}
 
 \begin{frame}{Shortfalls}
 \begin{itemize}
-\item Implement a GPU version of \textit{cubLattice\_g}.
-\item Uphold automatic integration attributes.
-\item Benchmarking of performance vs CPU
-\item More robust control of GPU in Matlab
+\item We do not need FFT in parallel.
+\item In GAIL GPU implementation of \textit{cublattice\_g} is good, but...
+\item Complete integration into library is buggy.
+\item GPU may not always be faster than CPU depending on problem
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Max Speed Up}
-
-\end{frame}
-
 \begin{frame}{GPU Hardware Bias}
-
+\begin{itemize}
+\item GPU computation is heavily hardware biased
+\item Variety of products and manufactures
+\item Measure dollars per performance speed up $\frac{\$}{\text{speed up}}$
+\end{itemize}
 \end{frame}
 
-\begin{frame}{MC Examples of Hardware Bias}
+\begin{frame}{MC Examples of Hardware Bias}%Use M565 money example
+\begin{itemize}
+\item Easiest to see with a Pseudo-random number example
+\item GTX 1050 (laptop GPU) MSRP \$400 vs GTX 1080 (Desktop GPU) MSRP \$700
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Further Work}
 
 \end{frame}
 \begin{frame}{References}
