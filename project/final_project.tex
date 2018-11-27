@@ -86,13 +86,24 @@ d
 \begin{frame}{MC Examples of Hardware Bias}%Use M565 money example
 \begin{itemize}
 \item Easiest to see with a Pseudo-random number example
+\item IID best for GPU do not have to rely on dependent samples
 \item GTX 1050 (laptop GPU) MSRP \$400 vs GTX 1080 (Desktop GPU) MSRP \$700
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Further Work}
-
+\begin{frame}{GPU Speed Up Cost}
+\centering
+\includegraphics[width=0.85\textwidth]{gpuspeedup.png} 
 \end{frame}
+
+\begin{frame}{Further Work}
+\begin{itemize}
+\item Full integration of \textit{cublattice\_g} to work with entirety of GAIL
+\item Extend GPU capabilities to IID Monte Carlo 
+\item Other Quasi-Monte Carlo methods can sped up with GPU despite dependent sampling
+\end{itemize}
+\end{frame}
+
 \begin{frame}{References}
 \bibliographystyle{abbrv}
 \bibliography{cs595_references}
