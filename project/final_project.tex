@@ -57,7 +57,7 @@ Lattice Cubature on GPU}
 \begin{itemize}
 \item Generated lattices from 6-8 times faster at least.
 \item Function evaluations and averages computed on GPU.
-\item Using Keister example we can get speed ups to about 10-12 times faster over CPU for high dimensions.
+\item Using Keister example we can get speed ups to about 4-10 times faster over CPU for high dimensions.
 \item \[ \int_{\mathbb{R}^d}\cos(\|x\|)e^{-\|x\|^2} \textit{d}x\]
 \end{itemize}
 \end{frame}
@@ -106,7 +106,7 @@ Lattice Cubature on GPU}
 \begin{itemize}
 \item Full integration of \textit{cublattice\_g} to work with entirety of GAIL
 \item Extend GPU capabilities to IID Monte Carlo 
-\item Other Quasi-Monte Carlo methods can sped up with GPU despite dependent sampling
+\item Other Quasi-Monte Carlo methods can sped up with GPU despite non IID sampling
 \end{itemize}
 \end{frame}
 
