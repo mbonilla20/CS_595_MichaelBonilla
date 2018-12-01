@@ -1,0 +1,38 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+\author{Michael Bonilla}
+\title{Lattice Cubature Using GPUs and Matlab}
+\begin{document}
+\maketitle
+\begin{abstract}
+This work is in effort to provide some GPU capabilities to the Guaranteed Automatic Integration Library (GAIL)\cite{GAIL} namely in the Quasi-Monte Carlo integration techniques using lattice points \cite{toni}. Using Matlab we will attempt to integrate functions over high dimensional regions using lattices and high dimensional cubature. First we will generate the lattices in parallel and using the work of the contributors of GAIL we will transform these points using Fast Fourier Transforms (FFT) and come up with an approximation of the integral. We will also attempt to incorporate the automatic integration features provided by GAIL into our GPU implementation. To illustrate our findings we will implement the methods on various suitable problems of many dimensions.
+\end{abstract}
+\section{Introduction}
+Integration techniques in low dimensions (1,2,3) are extensively used in many computing libraries such as trapezoidal rule, Gaussian quadrature, etc. Once we head to higher dimensional problems such as 10 or more dimensions these techniques become rather cumbersome and are not efficient or reliable. For higher dimensional problems we often utilize Monte-Carlo methods to approximate the definite integral of high dimensional regions and functions. A branch of these Monte-Carlo methods includes Quasi-Monte Carlo methods which instead of using pseudo random numbers we use quasi-random numbers. Using such numbers can gives us faster convergence over usual pseudo random number methods. 
+
+\section{Background and Preliminary Theory}
+Traditional Monte Carlo uses independent and identically distributed (IID) random numbers to represent samples $x_i$ where $x_i$ can be multidimensional. Therefore we approximate the integral
+\[
+	\int_{\Omega}f(x)dx \approx \frac{1}{N}\sum_{i=1}^{N}f(x_i)
+\]
+for $\Omega$ is the domain we wish to integrate over. Most of the time $\Omega$ is either $\mathbb{R}^d$ or $[0,1]^d$, the $d$ dimensional hypercube, for $d$ is the dimension of the domain. The $x_i$ are generated based on the distribution we need for the appropriate domain. For example if we work on the entire domain $\mathbb{R}^d$ we would use normally distributed $x_i$ in $d$ dimensions. Similarly for a hypercube we will use uniformly distributed $x_i$ on $[0,1]^d$. Once we obtain the $x_i$ they are used to evaluate the function $f$ and are averaged over the $N$ number of $x_i$. This is essentially the traditional pseudo-random Monte Carlo method and it has an order of convergence of about $\mathcal{O}(1/\sqrt{N})$. Meaning if we would like to half the error tolerance we would need to increase the sample size by a factor of 4.
+\\
+\\
+On the other hand Quasi-Monte Carlo is the same as Monte Carlo except of how we choose the randomized $x_i$. The $x_i$ are no longer chosen in an IID manner but are now actually chosen using low-discrepancy sampling \cite{toni}. Essentially the $x_i$ are spread across the $d$ dimensional hyper cube in a clever way and are essentially shifted by a uniformly distributed shift $\Delta$. Using this method of choosing $x_i$ gives us a order of convergence of nearly $\mathcal{O}(1/N)$ \cite{toni}. The result is we get a much faster convergence by using fewer samples and the disadvantages can range from having a biased estimator or larger variance depending on the problem.
+\\
+\\
+We have gone over the basics of Monte Carlo and Quasi Monte Carlo and if one were to implement these methods the user will have to set the number of samples themselves based on the problem for a need error tolerance. The work done by Hickernell and his group \cite{GAIL} created the Guaranteed Automatic Integration Library (GAIL) allows the user to numerically integrate functions in high dimensions using Monte Carlo methods automatically. Automatically in this context means the user provides a function, domain, and error tolerances at the very least and the library and its functions will determine the work needed automatically to achieve such error tolerances. Work done by Ruguma and Hickernell \cite{toni} is incorporated in GAIL in the function \textit{cub\_lattice}. The Quasi-Monte Carlo is done as previously described and the automatic part of the algorithm is based on the work in \cite{toni}. For the most part the algorithm will converge to the desired tolerance if the Fourier coefficients of the evaluated $f(x_i)$ diminish quickly enough otherwise more samples are used until the algorithm uses up the prescribed budget given by the user allowed by the theory. 
+\section{Results and Analysis}
+
+\section{Shortfalls and Future Work}
+\bibliographystyle{abbrv}
+\bibliography{cs595_references}
+\end{document}
